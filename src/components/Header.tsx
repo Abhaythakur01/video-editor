@@ -23,20 +23,20 @@ const Header = () => {
   ];
 
   return (
-    <header 
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-slate-900/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-yellow-400/5' 
+    <header
+      className={`fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 transition-all duration-500 rounded-full ${
+        isScrolled
+          ? 'bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-lg shadow-yellow-400/5'
           : 'bg-transparent'
       }`}
     >
-      <nav className="container mx-auto px-6 py-4">
+      <nav className="container mx-auto px-6 py-2">
         <div className="flex justify-between items-center">
-          {/* Brand */}
-          <div className="text-2xl font-bold tracking-wider bg-gradient-to-r from-yellow-400 via-green-400 to-yellow-500 bg-clip-text text-transparent">
-            AM
-          </div>
-          
+          {/* Brand Logo */}
+          <a href="#hero">
+            <img src="/assets/company-icon.png" alt="Anurag MediaWorks Logo" className="h-16 w-auto" />
+          </a>
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8">
             {navItems.map((item) => (
@@ -79,13 +79,7 @@ const Header = () => {
         )}
       </nav>
 
-      {/* Floating Glow Elements for Consistency */}
-      {isScrolled && (
-        <>
-          <div className="absolute top-0 left-1/4 w-32 h-32 bg-yellow-400/10 rounded-full blur-2xl pointer-events-none"></div>
-          <div className="absolute top-0 right-1/4 w-24 h-24 bg-green-400/10 rounded-full blur-xl pointer-events-none"></div>
-        </>
-      )}
+      {/* Floating Glow Elements are no longer needed here as the shadow provides a similar effect */}
     </header>
   );
 };
