@@ -1,127 +1,515 @@
-import React, { useState } from 'react';
-import { Play } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const Showreel = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [activeClass, setActiveClass] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const timeoutRef = useRef(null);
+  const animationTimeoutRef = useRef(null);
 
-  // Local video paths (upload to /public/assets/showreel/)
-  const reelThumbnails = [
+  const showreelItems = [
     {
       id: 1,
-      title: 'Non-Fiction Shows Reel',
-      thumbnail: '/assets/showreel/nonfiction.jpg',
-      video: '/assets/showreel/nonfiction.mp4',
-      duration: '5:00'
+      title: 'Cinematic Adventures',
+      topic: 'Travel Films',
+      description: 'Journey through breathtaking landscapes and vibrant cultures. Each frame is a story, meticulously crafted to inspire wanderlust and awe.',
+      video: 'https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761',
     },
     {
       id: 2,
-      title: 'Web Series Reel',
-      thumbnail: '/assets/showreel/webseries.jpg',
-      video: '/assets/showreel/webseries.mp4',
-      duration: '4:30'
+      title: 'Brand Anthems',
+      topic: 'Commercials',
+      description: 'Dynamic and compelling brand stories that capture attention, evoke emotion, and drive results for leading global brands.',
+      video: 'https://player.vimeo.com/external/195913085.sd.mp4?s=7c12f7a83de62a8900fd2e49d97ba017c6c9c8b5&profile_id=139&oauth2_token_id=57447761',
     },
     {
       id: 3,
-      title: 'Other Works Reel',
-      thumbnail: '/assets/showreel/others.jpg',
-      video: '/assets/showreel/others.mp4',
-      duration: '3:20'
-    }
+      title: 'Rhythmic Visions',
+      topic: 'Music Videos',
+      description: 'Visual masterpieces synchronized with sound, creating immersive experiences that elevate the music and connect with audiences.',
+      video: 'https://player.vimeo.com/external/211648666.sd.mp4?s=fe98da5d0cfa79867c3614e1c61dd06fe2626ab4&profile_id=139&oauth2_token_id=57447761',
+    },
+    {
+      id: 4,
+      title: 'Urban Canvas',
+      topic: 'Cityscapes',
+      description: 'Explore the vibrant pulse of city life through stunning visuals and fast-paced editing, capturing the essence of the metropolis.',
+      video: 'https://player.vimeo.com/external/230902142.sd.mp4?s=7f9c5c2c3d1e4b5f4c2f3c1d4e5f6a7b8c9d0e1f&profile_id=139&oauth2_token_id=57447761',
+    },
+    {
+      id: 5,
+      title: 'Product in Motion',
+      topic: 'Brand Films',
+      description: 'Sleek and sophisticated product showcases that highlight design, functionality, and innovation in a visually captivating way.',
+      video: 'https://player.vimeo.com/external/197933516.sd.mp4?s=b5dcde8ad0c42e7ac0df0adf9f4b7d1c3d2f4e5a&profile_id=139&oauth2_token_id=57447761',
+    },
   ];
 
-  return (
-    <section id="showreel" className="py-20 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
-      {/* Background glowing orbs */}
-      <div className="absolute top-1/2 left-10 w-96 h-96 bg-yellow-400/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-10 w-64 h-64 bg-green-400/10 rounded-full blur-2xl animate-pulse delay-500"></div>
+  const totalItems = showreelItems.length;
 
-      <div className="container mx-auto px-6 relative z-10">
-        {/* Heading */}
-        <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-bold mb-6">
-            <span className="text-white">SHOW</span>
-            <span className="bg-gradient-to-r from-yellow-400 via-green-400 to-yellow-500 bg-clip-text text-transparent">REEL</span>
-          </h2>
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            A carousel of selected works across <span className="text-yellow-400 font-semibold">Non-Fiction Shows</span>, 
-            <span className="text-green-400 font-semibold"> Web Series</span>, and <span className="text-yellow-400 font-semibold">Digital Projects</span>. 
-            Each reel highlights 5-second clips previewing cinematic edits and storytelling.
-          </p>
+  const handleNext = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setActiveClass('next');
+    
+    animationTimeoutRef.current = setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % totalItems);
+      setActiveClass('');
+      setIsAnimating(false);
+    }, 500);
+  }, [isAnimating, totalItems]);
+
+  const handlePrev = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setActiveClass('prev');
+    
+    animationTimeoutRef.current = setTimeout(() => {
+      setCurrentIndex((prev) => (prev - 1 + totalItems) % totalItems);
+      setActiveClass('');
+      setIsAnimating(false);
+    }, 500);
+  }, [isAnimating, totalItems]);
+
+  // Auto-advance carousel
+  useEffect(() => {
+    if (!isAnimating) {
+      timeoutRef.current = setTimeout(handleNext, 5000);
+    }
+    
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [currentIndex, isAnimating, handleNext]);
+
+  // Cleanup timeouts
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Get next item for preview
+  const getNextItem = () => {
+    const nextIndex = (currentIndex + 1) % totalItems;
+    return showreelItems[nextIndex];
+  };
+
+  const nextItem = getNextItem();
+
+  return (
+    <section id="showreel" className="relative h-screen text-white overflow-hidden bg-black">
+      <div className={`showreel-carousel ${activeClass}`}>
+        {/* Current Video */}
+        <div className="main-video">
+          <video 
+            src={showreelItems[currentIndex].video} 
+            className="video-slide" 
+            autoPlay 
+            muted 
+            loop 
+            playsInline
+            key={currentIndex}
+            onError={(e) => {
+              e.target.style.backgroundColor = '#1a1a1a';
+            }}
+          />
+          <div className="content">
+            <div className="author">ANURAG MEDIAWORKS</div>
+            <div className="title">{showreelItems[currentIndex].title}</div>
+            <div className="topic">{showreelItems[currentIndex].topic}</div>
+            <div className="des">{showreelItems[currentIndex].description}</div>
+          </div>
         </div>
 
-        {/* Main Carousel Showreel */}
-        <div className="relative mb-16 group overflow-hidden">
-          <div
-            className={`relative overflow-hidden rounded-2xl backdrop-blur-lg bg-slate-900/40 border border-white/10 transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              isPlaying ? 'shadow-xl shadow-yellow-400/20' : 'shadow-lg shadow-black/40'
-            }`}
-          >
-            <div className="aspect-video relative overflow-hidden flex">
-              {/* Active Reel */}
-              {!isPlaying && (
-                <img
-                  src={reelThumbnails[0].thumbnail}
-                  alt="Main Showreel"
-                  className="w-full h-full object-cover transform transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80 transition-opacity duration-[1500ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-90"></div>
-
-              {!isPlaying && (
-                <button
-                  onClick={() => setIsPlaying(true)}
-                  className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                >
-                  <div className="bg-gradient-to-r from-yellow-400 to-green-400 text-white p-6 rounded-full transform scale-90 group-hover:scale-100 transition-transform duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:shadow-lg group-hover:shadow-yellow-400/30 delay-200">
-                    <Play size={48} className="ml-2" />
-                  </div>
-                </button>
-              )}
-
-              {isPlaying && (
-                <video src={reelThumbnails[0].video} autoPlay muted loop className="w-full h-full object-cover rounded-2xl" />
-              )}
+        {/* Next Video Preview - Bottom Right */}
+        <div className="next-preview">
+          <div className="preview-container">
+            <video 
+              src={nextItem.video} 
+              className="preview-video" 
+              autoPlay 
+              muted 
+              loop 
+              playsInline
+              onError={(e) => {
+                e.target.style.backgroundColor = '#1a1a1a';
+              }}
+            />
+            <div className="preview-overlay">
+              <span>NEXT</span>
             </div>
           </div>
         </div>
 
-        {/* Carousel Thumbnails */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {reelThumbnails.map((reel, idx) => (
-            <div
-              key={reel.id}
-              className="group relative overflow-hidden rounded-2xl bg-slate-900/40 backdrop-blur-lg border border-white/10 hover:shadow-lg hover:shadow-yellow-400/20 transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{ transitionDelay: `${idx * 100}ms` }}
-            >
-              <div className="aspect-video relative overflow-hidden">
-                <img
-                  src={reel.thumbnail}
-                  alt={reel.title}
-                  className="w-full h-full object-cover transform transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-70 transition-opacity duration-[1500ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-90"></div>
+        {/* Navigation Arrows */}
+        <div className="arrows">
+          <button 
+            className="arrow-btn prev-btn" 
+            onClick={handlePrev}
+            disabled={isAnimating}
+            type="button"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <button 
+            className="arrow-btn next-btn" 
+            onClick={handleNext}
+            disabled={isAnimating}
+            type="button"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
 
-                {/* Play icon */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-150">
-                  <div className="bg-gradient-to-r from-yellow-400 to-green-400 text-white p-3 rounded-full transform scale-90 group-hover:scale-100 transition-transform duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-300">
-                    <Play size={24} className="ml-1" />
-                  </div>
-                </div>
+        {/* Progress Bar */}
+        <div className={`time ${activeClass ? 'running' : ''}`}></div>
 
-                {/* Duration */}
-                <div className="absolute bottom-3 right-3 bg-slate-900/70 backdrop-blur-sm text-white px-2 py-1 rounded-lg text-sm border border-white/10">
-                  {reel.duration}
-                </div>
-              </div>
-
-              {/* Title */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-200">
-                <h3 className="text-white font-semibold text-lg">{reel.title}</h3>
-              </div>
-            </div>
-          ))}
+        {/* Contact Button */}
+        <div className="contact-btn">
+          <button type="button" className="contact-button">
+            CONTACT
+          </button>
         </div>
       </div>
+
+      <style>{`
+        .showreel-carousel {
+          height: 100vh;
+          width: 100vw;
+          overflow: hidden;
+          position: relative;
+        }
+        
+        .main-video {
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+        
+        .main-video .video-slide {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          background-color: #1a1a1a;
+          transition: opacity 0.5s ease-in-out;
+        }
+        
+        .main-video .content {
+          position: absolute;
+          top: 20%;
+          width: min(1140px, 80%);
+          left: 50%;
+          transform: translateX(-50%);
+          padding-right: min(30%, 200px);
+          box-sizing: border-box;
+          color: #fff;
+          text-shadow: 0 5px 10px rgba(0,0,0,0.4);
+        }
+        
+        .main-video .content > * {
+          animation: slideInUp 0.8s ease-out forwards;
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        
+        .main-video .content .author {
+          animation-delay: 0.1s;
+          font-weight: bold;
+          letter-spacing: 8px;
+          font-size: 0.9em;
+          margin-bottom: 10px;
+        }
+        
+        .main-video .content .title {
+          animation-delay: 0.3s;
+          font-size: clamp(2em, 5vw, 5em);
+          font-weight: bold;
+          line-height: 1.2em;
+          margin: 5px 0;
+          background: linear-gradient(45deg, #FFD700, #32CD32, #00CED1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .main-video .content .topic {
+          animation-delay: 0.5s;
+          font-size: clamp(2em, 5vw, 5em);
+          font-weight: bold;
+          line-height: 1.2em;
+          margin: 5px 0;
+          background: linear-gradient(45deg, #FFD700, #32CD32, #00CED1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .main-video .content .des {
+          animation-delay: 0.7s;
+          margin: 20px 0;
+          line-height: 1.6;
+          font-size: 1.1em;
+          color: #e0e0e0;
+        }
+        
+        @keyframes slideInUp {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        /* Next Video Preview - Bottom Right */
+        .next-preview {
+          position: absolute;
+          bottom: 40px;
+          right: 40px;
+          z-index: 100;
+          width: 180px;
+          height: 120px;
+          border-radius: 12px;
+          overflow: hidden;
+          border: 2px solid transparent;
+          background: linear-gradient(45deg, #FFD700, #32CD32, #00CED1);
+          background-clip: padding-box;
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+        
+        .next-preview:hover {
+          transform: scale(1.05);
+          box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        .preview-container {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          border-radius: 10px;
+          overflow: hidden;
+          background: #000;
+        }
+        
+        .preview-video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          background-color: #1a1a1a;
+        }
+        
+        .preview-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(50,205,50,0.1), rgba(0,206,209,0.1));
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        
+        .next-preview:hover .preview-overlay {
+          opacity: 1;
+        }
+        
+        .preview-overlay span {
+          color: #fff;
+          font-weight: bold;
+          font-size: 14px;
+          letter-spacing: 2px;
+          background: rgba(0,0,0,0.7);
+          padding: 8px 16px;
+          border-radius: 20px;
+          backdrop-filter: blur(10px);
+        }
+        
+        /* Navigation Arrows */
+        .arrows {
+          position: absolute;
+          top: 50%;
+          right: 40px;
+          transform: translateY(-50%);
+          z-index: 100;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        
+        .arrow-btn {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          background: rgba(0,0,0,0.3);
+          backdrop-filter: blur(10px);
+          border: 2px solid rgba(255,255,255,0.2);
+          color: #fff;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .arrow-btn:hover:not(:disabled) {
+          background: linear-gradient(45deg, #FFD700, #32CD32, #00CED1);
+          border-color: transparent;
+          transform: scale(1.1);
+          color: #000;
+        }
+        
+        .arrow-btn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+        
+        /* Contact Button */
+        .contact-btn {
+          position: absolute;
+          top: 40px;
+          left: 40px;
+          z-index: 100;
+        }
+        
+        .contact-button {
+          padding: 12px 24px;
+          background: transparent;
+          border: 2px solid #fff;
+          color: #fff;
+          font-weight: 600;
+          letter-spacing: 2px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          border-radius: 4px;
+          font-family: inherit;
+        }
+        
+        .contact-button:hover {
+          background: linear-gradient(45deg, #FFD700, #32CD32, #00CED1);
+          border-color: transparent;
+          color: #000;
+          transform: translateY(-2px);
+          box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* Progress Bar */
+        .time {
+          position: absolute;
+          z-index: 1000;
+          width: 0;
+          height: 4px;
+          background: linear-gradient(90deg, #FFD700, #32CD32, #00CED1);
+          left: 0;
+          top: 0;
+          transition: width 5s linear;
+        }
+        
+        .time:not(.running) {
+          width: 100%;
+        }
+        
+        .time.running {
+          width: 0;
+          transition: width 0.5s ease;
+        }
+        
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+          .main-video .content {
+            padding-right: 20px;
+            top: 30%;
+            width: 90%;
+          }
+          
+          .main-video .content .title,
+          .main-video .content .topic {
+            font-size: clamp(1.5em, 8vw, 3em);
+          }
+          
+          .main-video .content .des {
+            font-size: 1em;
+            line-height: 1.4;
+          }
+          
+          .next-preview {
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 80px;
+          }
+          
+          .arrows {
+            right: 20px;
+            gap: 8px;
+          }
+          
+          .arrow-btn {
+            width: 40px;
+            height: 40px;
+          }
+          
+          .arrow-btn svg {
+            width: 18px;
+            height: 18px;
+          }
+          
+          .contact-btn {
+            top: 20px;
+            left: 20px;
+          }
+          
+          .contact-button {
+            padding: 8px 16px;
+            font-size: 0.9em;
+          }
+        }
+        
+        @media screen and (max-width: 480px) {
+          .main-video .content {
+            width: 95%;
+            top: 25%;
+          }
+          
+          .main-video .content .author {
+            font-size: 0.7em;
+            letter-spacing: 4px;
+          }
+          
+          .next-preview {
+            width: 100px;
+            height: 70px;
+            bottom: 15px;
+            right: 15px;
+          }
+          
+          .preview-overlay span {
+            font-size: 12px;
+            padding: 6px 12px;
+          }
+          
+          .arrows {
+            bottom: 120px;
+            right: 15px;
+            flex-direction: row;
+            top: auto;
+            transform: none;
+          }
+        }
+      `}</style>
     </section>
   );
 };
