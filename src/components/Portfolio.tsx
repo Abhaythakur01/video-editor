@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PlayCircle, X, Award } from "lucide-react";
 
+import { DEMO_PROJECTS } from "./portfolioData";  // ✅ new import
+
 /**
  * PortfolioVideoGrid — Mobile-Safe Modal Player
  * -------------------------------------------------------------
@@ -34,68 +36,8 @@ export type VideoProject = {
   captureAtSeconds?: number;
 };
 
-// --------------------- Demo Data (replace with yours) ---------------------
 
-const DEMO_PROJECTS: VideoProject[] = [
-  {
-    id: 1,
-    title: "Luxury Watch Campaign",
-    category: "commercial",
-    year: "2024",
-    client: "Premium Timepieces",
-    src: "/assets/videos/luxury-watch.mp4",
-    description: "Precision and elegance wrapped in 30 seconds.",
-    awards: ["Best Commercial Edit 2024"],
-    captureAtSeconds: 1.5,
-  },
-  {
-    id: 2,
-    title: "Urban Dreams",
-    category: "concept",
-    year: "2024",
-    client: "Independent Film",
-    src: "/assets/videos/urban-dreams.mp4",
-    description: "A surreal drift between Mumbai's nights and neon.",
-  },
-  {
-    id: 3,
-    title: "Tech Startup Launch",
-    category: "brand",
-    year: "2023",
-    client: "InnovateX",
-    src: "/assets/videos/innovatex-launch.mp4",
-    description: "Momentum, energy, and a bold new brand story.",
-    awards: ["Silver Lion Cannes 2024"],
-    captureAtSeconds: 0.8,
-  },
-  {
-    id: 4,
-    title: "Monsoon Melody",
-    category: "music",
-    year: "2023",
-    client: "Indie Artist",
-    src: "/assets/videos/monsoon-melody.mp4",
-    description: "Heart-on-sleeve visuals in the pouring rain.",
-  },
-  {
-    id: 5,
-    title: "Fashion Forward",
-    category: "commercial",
-    year: "2023",
-    client: "Haute Couture Brand",
-    src: "/assets/videos/fashion-forward.mp4",
-    description: "Avant-garde silhouettes with razor-sharp edits.",
-  },
-  {
-    id: 6,
-    title: "Silent Conversations",
-    category: "concept",
-    year: "2023",
-    client: "Art House Production",
-    src: "/assets/hero-video.mp4",
-    description: "Two strangers, one city, a thousand glances.",
-  },
-];
+
 
 // --------------------- Utilities ---------------------
 
@@ -201,57 +143,44 @@ type VideoCardProps = {
   index: number;
 };
 
-const VideoCard: React.FC<VideoCardProps> = ({ project, onOpen, index }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ project, onOpen }) => {
   const { thumb, isLoading } = useVideoThumbnail(project.src, project.captureAtSeconds);
 
   return (
     <motion.div
-      className="group relative overflow-hidden rounded-2xl bg-slate-900/40 backdrop-blur-lg border border-white/10 hover:shadow-2xl hover:shadow-yellow-400/20"
-      initial={{ opacity: 0, y: 24, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.7, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="group flex flex-col bg-black rounded-xl overflow-hidden border border-slate-800 hover:border-slate-600 transition-colors"
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {/* Thumbnail */}
-      <div className="relative aspect-video overflow-hidden">
+      <div className="relative aspect-video bg-slate-900 flex items-center justify-center">
         {isLoading ? (
-          <div className="w-full h-full animate-pulse bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800" />
+          <div className="w-full h-full animate-pulse bg-slate-800" />
         ) : (
           <img
             src={thumb || ""}
             alt={`${project.title} thumbnail`}
-            className="w-full h-full object-cover transform transition-transform duration-[1000ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-110 group-hover:brightness-110"
+            className="w-full h-full object-cover"
             draggable={false}
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <motion.button
-            onClick={() => onOpen(project)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 active:scale-95 transition"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <PlayCircle className="w-5 h-5" />
-            <span className="text-sm font-medium">Play</span>
-          </motion.button>
-        </div>
+        <button
+          onClick={() => onOpen(project)}
+          className="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-white/10 text-white text-sm border border-white/20 hover:bg-white/20 transition"
+        >
+          ▶ Play
+        </button>
       </div>
 
       {/* Content */}
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-yellow-400 group-hover:via-green-400 group-hover:to-yellow-500 group-hover:bg-clip-text transition-all duration-500">
-            {project.title}
-          </h3>
-          <span className="text-sm text-white/80 bg-slate-800/40 backdrop-blur-sm px-2 py-1 rounded-lg border border-white/10">
-            {project.year}
-          </span>
-        </div>
-        <p className="text-slate-300 mb-2">{project.client}</p>
-        <p className="text-slate-400 text-sm mb-3 line-clamp-2">{project.description}</p>
+      <div className="p-4 flex flex-col gap-2">
+        <h3 className="text-lg font-semibold text-white">{project.title}</h3>
+        <p className="text-sm text-slate-400">{project.client}</p>
+        <p className="text-sm text-slate-500 line-clamp-2">{project.description}</p>
         {!!project.awards?.length && (
-          <div className="flex items-center gap-2 text-slate-200 text-sm">
-            <Award size={16} className="text-yellow-400" />
+          <div className="flex items-center gap-2 text-xs text-slate-300">
+            <Award size={14} className="text-yellow-400" />
             <span>{project.awards[0]}</span>
           </div>
         )}

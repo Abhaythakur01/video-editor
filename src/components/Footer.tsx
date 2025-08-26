@@ -12,7 +12,7 @@ const Footer = () => {
     },
     { 
       icon: <Mail size={24} />, 
-      href: 'mailto:anurag45gupta@gmail.com', 
+      href: 'mailto:anuragmediaworks@gmail.com', 
       label: 'Email',
       color: 'hover:text-yellow-400',
       bgColor: 'hover:bg-yellow-500/10'

@@ -13,35 +13,35 @@ const Showreel = () => {
       title: 'Cinematic Adventures',
       topic: 'Travel Films',
       description: 'Journey through breathtaking landscapes and vibrant cultures. Each frame is a story, meticulously crafted to inspire wanderlust and awe.',
-      video: 'https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761',
+      video: '/assets/portfolioVideos/Neelanath.mp4',
     },
     {
       id: 2,
       title: 'Brand Anthems',
       topic: 'Commercials',
       description: 'Dynamic and compelling brand stories that capture attention, evoke emotion, and drive results for leading global brands.',
-      video: 'https://player.vimeo.com/external/195913085.sd.mp4?s=7c12f7a83de62a8900fd2e49d97ba017c6c9c8b5&profile_id=139&oauth2_token_id=57447761',
+      video: '/assets/portfolioVideos/SobhaConstruction.mp4',
     },
     {
       id: 3,
       title: 'Rhythmic Visions',
       topic: 'Music Videos',
       description: 'Visual masterpieces synchronized with sound, creating immersive experiences that elevate the music and connect with audiences.',
-      video: 'https://player.vimeo.com/external/211648666.sd.mp4?s=fe98da5d0cfa79867c3614e1c61dd06fe2626ab4&profile_id=139&oauth2_token_id=57447761',
+      video: '/assets/portfolioVideos/SanamPuri.mp4',
     },
     {
       id: 4,
-      title: 'Urban Canvas',
-      topic: 'Cityscapes',
-      description: 'Explore the vibrant pulse of city life through stunning visuals and fast-paced editing, capturing the essence of the metropolis.',
-      video: 'https://player.vimeo.com/external/230902142.sd.mp4?s=7f9c5c2c3d1e4b5f4c2f3c1d4e5f6a7b8c9d0e1f&profile_id=139&oauth2_token_id=57447761',
+      title: 'Awards and Functions',
+      topic: 'Event Highlights',
+      description: 'Capturing the essence and excitement of prestigious events, showcasing memorable moments with elegance and flair.',
+      video: '/assets/portfolioVideos/Ranbir.mp4',
     },
     {
       id: 5,
       title: 'Product in Motion',
       topic: 'Brand Films',
       description: 'Sleek and sophisticated product showcases that highlight design, functionality, and innovation in a visually captivating way.',
-      video: 'https://player.vimeo.com/external/197933516.sd.mp4?s=b5dcde8ad0c42e7ac0df0adf9f4b7d1c3d2f4e5a&profile_id=139&oauth2_token_id=57447761',
+      video: '/assets/portfolioVideos/POCO.mp4',
     },
   ];
 
@@ -176,12 +176,8 @@ const Showreel = () => {
         {/* Progress Bar */}
         <div className={`time ${activeClass ? 'running' : ''}`}></div>
 
-        {/* Contact Button */}
-        <div className="contact-btn">
-          <button type="button" className="contact-button">
-            CONTACT
-          </button>
-        </div>
+        
+        
       </div>
 
       <style>{`

@@ -104,13 +104,17 @@ const Stats = () => {
         </div>
 
         {/* CTA */}
+                {/* CTA */}
         <div className="text-center mt-12 sm:mt-16">
-          <button className="group bg-gradient-to-r from-yellow-400 to-green-400 hover:from-yellow-300 hover:to-green-300 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/25 text-sm sm:text-base">
+          <a 
+            href="mailto:anuragmediaworks@gmail.com?subject=Let's Build Together&body=Hi Anurag,%0D%0A%0D%0AI'm interested in working with you on a video editing project.%0D%0A%0D%0ABest regards,"
+            className="group inline-block bg-gradient-to-r from-yellow-400 to-green-400 hover:from-yellow-300 hover:to-green-300 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/25 text-sm sm:text-base"
+          >
             <span className="flex items-center gap-2 justify-center">
               <Sparkles size={16} className="sm:w-5 sm:h-5 group-hover:rotate-12 transition-transform duration-300" />
               Let's Build Together
             </span>
-          </button>
+          </a>
         </div>
       </div>
     </section>

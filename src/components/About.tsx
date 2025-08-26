@@ -62,8 +62,8 @@ const About = () => {
               {/* Main Image Container */}
               <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl relative">
                 <img 
-                  src="https://images.pexels.com/photos/1587927/pexels-photo-1587927.jpeg"
-                  alt="Abhay Thakur"
+                  src="/assets/photos/myStory.png"
+                  alt="Anurag Gupta"
                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                 />
                 {/* Gradient Overlays */}
@@ -82,11 +82,11 @@ const About = () => {
                 <div className="glass-card p-4 backdrop-blur-md">
                   <div className="flex justify-between items-center text-white">
                     <div>
-                      <div className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-green-400 bg-clip-text text-transparent">50+</div>
+                      <div className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-green-400 bg-clip-text text-transparent">300+</div>
                       <div className="text-xs opacity-80">Projects</div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent">5+</div>
+                      <div className="text-2xl font-bold bg-gradient-to-r from-green-400 to-yellow-400 bg-clip-text text-transparent">14+</div>
                       <div className="text-xs opacity-80">Years</div>
                     </div>
                     <div>
@@ -147,15 +147,19 @@ const About = () => {
             </div>
 
             {/* Call to Action */}
+            
             <div className={`pt-8 transition-all duration-1000 delay-1000 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}>
-              <button className="group bg-gradient-to-r from-yellow-400 to-green-400 hover:from-yellow-300 hover:to-green-300 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/25">
+              <a 
+                href="mailto:anuragmediaworks@gmail.com?subject=Let's Create Magic Together&body=Hi Anurag,%0D%0A%0D%0AI'd love to discuss a video editing project with you.%0D%0A%0D%0ABest regards,"
+                className="group inline-block bg-gradient-to-r from-yellow-400 to-green-400 hover:from-yellow-300 hover:to-green-300 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/25"
+              >
                 <span className="flex items-center gap-2">
                   <Sparkles size={20} className="group-hover:rotate-12 transition-transform duration-300" />
                   Let's Create Magic Together
                 </span>
-              </button>
+              </a>
             </div>
           </div>
         </div>
