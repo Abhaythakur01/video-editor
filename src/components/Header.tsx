@@ -6,6 +6,13 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    // ✅ Load Montserrat Bold
+    const link = document.createElement('link');
+    link.href =
+      'https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -24,26 +31,34 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 transition-all duration-500 rounded-full ${
+      className={`fixed top-2 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 transition-all duration-500 rounded-full ${
         isScrolled
-          ? 'bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-lg shadow-yellow-400/5'
+          ? 'bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-md shadow-yellow-400/5'
           : 'bg-transparent'
       }`}
+      style={{ fontFamily: 'Montserrat, system-ui, sans-serif', fontWeight: 700 }}
     >
-      <nav className="container mx-auto px-6 py-2">
+      <nav className="container mx-auto px-4 py-1">
         <div className="flex justify-between items-center">
           {/* Brand Logo */}
-          <a href="#hero">
-            <img src="/assets/company-icon.png" alt="Anurag MediaWorks Logo" className="h-16 w-auto" />
+          <a href="#hero" className="flex items-center space-x-2">
+            <img
+              src="/assets/company-icon.png"
+              alt="Anurag MediaWorks Logo"
+              className="h-14 w-auto transition-all duration-300 hover:scale-105"
+            />
+            <span className="hidden sm:inline-block text-white tracking-wide text-lg md:text-xl">
+              Anurag MediaWorks
+            </span>
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex space-x-6">
             {navItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="relative text-white/80 hover:text-white transition-all duration-300 group"
+                className="relative text-white/80 hover:text-white transition-all duration-300 group tracking-wide text-sm"
               >
                 {item.label}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-yellow-400 via-green-400 to-yellow-500 transition-all duration-300 group-hover:w-full"></span>
@@ -53,7 +68,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-white"
+            className="md:hidden text-white transition-all duration-300 hover:scale-110"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -62,8 +77,8 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-white/10">
-            <div className="flex flex-col space-y-3 pt-4 bg-slate-900/40 backdrop-blur-xl rounded-xl p-4 border border-white/10 shadow-lg shadow-yellow-400/5">
+          <div className="md:hidden mt-2 pb-3 border-t border-white/10">
+            <div className="flex flex-col space-y-3 pt-3 bg-slate-900/40 backdrop-blur-xl rounded-xl p-4 border border-white/10 shadow-md shadow-yellow-400/5">
               {navItems.map((item) => (
                 <a
                   key={item.href}
@@ -78,8 +93,6 @@ const Header = () => {
           </div>
         )}
       </nav>
-
-      {/* Floating Glow Elements are no longer needed here as the shadow provides a similar effect */}
     </header>
   );
 };

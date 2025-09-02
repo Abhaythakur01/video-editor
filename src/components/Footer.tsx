@@ -1,7 +1,16 @@
-import React from 'react';
-import { Linkedin, Mail, Heart, Sparkles, ArrowUp } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Linkedin, Mail, Sparkles, ArrowUp } from 'lucide-react';
 
 const Footer = () => {
+  useEffect(() => {
+    // ✅ Load Montserrat Bold
+    const link = document.createElement("link");
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  }, []);
+
   const socialLinks = [
     { 
       icon: <Linkedin size={24} />, 
@@ -24,7 +33,10 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gradient-to-t from-slate-950 to-slate-900 border-t border-white/10 relative overflow-hidden">
+    <footer
+      className="bg-gradient-to-t from-slate-950 to-slate-900 border-t border-white/10 relative overflow-hidden"
+      style={{ fontFamily: "Montserrat, system-ui, sans-serif", fontWeight: 700 }}
+    >
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-to-r from-yellow-400/10 to-green-400/10 rounded-full blur-2xl"></div>
@@ -74,10 +86,7 @@ const Footer = () => {
             <h4 className="text-white font-semibold mb-4">Services</h4>
             <div className="space-y-3">
               {['Commercial Editing', 'Concept Films', 'Music Videos', 'Brand Stories', 'Color Grading'].map((service) => (
-                <div
-                  key={service}
-                  className="text-slate-400 text-sm"
-                >
+                <div key={service} className="text-slate-400 text-sm">
                   {service}
                 </div>
               ))}
@@ -112,9 +121,6 @@ const Footer = () => {
             <div className="text-center md:text-left">
               <p className="text-slate-400 text-sm mb-1">
                 © 2024 Anurag Gupta. All rights reserved.
-              </p>
-              <p className="text-slate-500 text-xs flex items-center gap-1 justify-center md:justify-start">
-                Crafted with <Heart size={12} className="text-yellow-400" /> and precision
               </p>
             </div>
 

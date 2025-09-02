@@ -1,23 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PlayCircle, X, Award } from "lucide-react";
+import { X, Award } from "lucide-react";
 
 import { DEMO_PROJECTS } from "./portfolioData";  // ✅ new import
-
-/**
- * PortfolioVideoGrid — Mobile-Safe Modal Player
- * -------------------------------------------------------------
- * Key upgrades in this version:
- * 1) TRUE responsive video in the modal that auto-scales to BOTH width & height.
- *    - The player container is capped by the *real* viewport height (via JS + 100dvh fallback).
- *    - The <video> uses object-contain + max-w/max-h so it never overflows.
- *    - Layout is a 2-row grid: [video | meta], where the video row flex-shrinks first to keep
- *      the whole sheet in view on tiny screens.
- * 2) Drag-to-close (swipe down) on touch devices, click backdrop, or ESC to dismiss.
- * 3) Body scroll lock while open.
- *
- * Drop-in: replace your current file with this one.
- */
 
 // --------------------- Types ---------------------
 
@@ -29,23 +14,14 @@ export type VideoProject = {
   category: Exclude<Category, "all">;
   year: string;
   client: string;
-  src: string; // e.g., "/assets/videos/luxury-watch.mp4"
-  description: string; // keep this short
+  src: string;
+  description: string;
   awards?: string[];
-  // optional: capture frame at N seconds; if omitted, it auto-picks ~25% of the duration
   captureAtSeconds?: number;
 };
 
-
-
-
 // --------------------- Utilities ---------------------
 
-/**
- * useVideoThumbnail
- * Creates a hidden <video> off-DOM, seeks to a target time, draws a frame to a canvas,
- * and returns a dataURL thumbnail. Cleans up listeners and elements.
- */
 function useVideoThumbnail(src: string, captureAtSeconds?: number) {
   const [thumb, setThumb] = useState<string | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -63,9 +39,9 @@ function useVideoThumbnail(src: string, captureAtSeconds?: number) {
 
         video = document.createElement("video");
         video.preload = "metadata";
-        video.muted = true; // prevents any autoplay restrictions from complaining
+        video.muted = true;
         video.playsInline = true;
-        video.crossOrigin = "anonymous"; // safe for same-origin local assets
+        video.crossOrigin = "anonymous";
         video.src = src;
 
         await new Promise<void>((resolve, reject) => {
@@ -97,7 +73,7 @@ function useVideoThumbnail(src: string, captureAtSeconds?: number) {
         const canvas = document.createElement("canvas");
         const w = video.videoWidth || 1280;
         const h = video.videoHeight || 720;
-        const targetW = 1280; // adjust as needed
+        const targetW = 1280;
         const scale = Math.min(1, targetW / w);
         canvas.width = Math.floor(w * scale);
         canvas.height = Math.floor(h * scale);
@@ -108,8 +84,8 @@ function useVideoThumbnail(src: string, captureAtSeconds?: number) {
         const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
 
         if (!cancelled) setThumb(dataUrl);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message || "Thumbnail generation failed");
+      } catch (e: unknown) {
+        if (!cancelled) setError((e instanceof Error && e.message) ? e.message : "Thumbnail generation failed");
       } finally {
         if (!cancelled) setLoading(false);
         if (video) {
@@ -148,34 +124,34 @@ const VideoCard: React.FC<VideoCardProps> = ({ project, onOpen }) => {
 
   return (
     <motion.div
-      className="group flex flex-col bg-black rounded-xl overflow-hidden border border-slate-800 hover:border-slate-600 transition-colors"
+      className="group flex flex-col bg-slate-900/80 rounded-2xl overflow-hidden border border-slate-800 hover:border-yellow-400/50 shadow-lg hover:shadow-yellow-400/20 transition-all duration-500 backdrop-blur-lg"
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {/* Thumbnail */}
-      <div className="relative aspect-video bg-slate-900 flex items-center justify-center">
+      <div className="relative aspect-video bg-slate-900 flex items-center justify-center overflow-hidden">
         {isLoading ? (
           <div className="w-full h-full animate-pulse bg-slate-800" />
         ) : (
           <img
             src={thumb || ""}
             alt={`${project.title} thumbnail`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             draggable={false}
           />
         )}
         <button
           onClick={() => onOpen(project)}
-          className="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-white/10 text-white text-sm border border-white/20 hover:bg-white/20 transition"
+          className="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-gradient-to-r from-yellow-400/80 to-green-400/80 text-black font-medium text-sm hover:from-yellow-400 hover:to-green-400 transition-all shadow-md"
         >
           ▶ Play
         </button>
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col gap-2">
-        <h3 className="text-lg font-semibold text-white">{project.title}</h3>
+      <div className="p-5 flex flex-col gap-2 font-[Montserrat] font-bold">
+        <h3 className="text-lg font-bold text-white tracking-tight">{project.title}</h3>
         <p className="text-sm text-slate-400">{project.client}</p>
         <p className="text-sm text-slate-500 line-clamp-2">{project.description}</p>
         {!!project.awards?.length && (
@@ -199,34 +175,25 @@ type PlayerModalProps = {
 
 const PlayerModal: React.FC<PlayerModalProps> = ({ open, project, onClose }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [maxH, setMaxH] = useState<string>("100dvh");
 
-  // Track the *real* viewport height for ultra-reliable mobile sizing.
-  const [maxH, setMaxH] = useState<string>("100dvh"); // fallback
   useEffect(() => {
     if (!open) return;
-    const update = () => {
-      // window.innerHeight gives the pixel-accurate viewport height with mobile UI considered
-      setMaxH(`${window.innerHeight}px`);
-    };
+    const update = () => setMaxH(`${window.innerHeight}px`);
     update();
     window.addEventListener("resize", update);
-    // some browsers fire orientationchange instead
-    const onOrientation = () => update();
-    window.addEventListener("orientationchange", onOrientation);
+    window.addEventListener("orientationchange", update);
     return () => {
       window.removeEventListener("resize", update);
-      window.removeEventListener("orientationchange", onOrientation);
+      window.removeEventListener("orientationchange", update);
     };
   }, [open]);
 
-  // Lock the body scroll & handle ESC
   useEffect(() => {
     if (open) {
       const original = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-      const onKey = (e: KeyboardEvent) => {
-        if (e.key === "Escape") onClose();
-      };
+      const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
       document.addEventListener("keydown", onKey);
       return () => {
         document.body.style.overflow = original;
@@ -235,18 +202,14 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ open, project, onClose }) => 
     }
   }, [open, onClose]);
 
-  // Autoplay on open (user gesture already happened)
   useEffect(() => {
     if (open && videoRef.current) {
       videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {
-        /* ignore autoplay errors */
-      });
+      videoRef.current.play().catch(() => {});
     }
   }, [open, project?.src]);
 
-  // Swipe/drag-to-close thresholds
-  const handleDragEnd = (_: any, info: { offset: { y: number }; velocity: { y: number } }) => {
+  const handleDragEnd = (_: unknown, info: { offset: { y: number }; velocity: { y: number } }) => {
     const travel = Math.abs(info.offset.y);
     const speed = Math.abs(info.velocity.y);
     if (travel > 120 || speed > 800) onClose();
@@ -256,13 +219,12 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ open, project, onClose }) => 
     <AnimatePresence>
       {open && project && (
         <motion.div
-          className="fixed inset-0 z-[100]"
+          className="fixed inset-0 z-[100] font-[Montserrat] font-bold"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
-          {/* Dim + BLUR BACKDROP */}
           <motion.div
             className="absolute inset-0 bg-black/60 backdrop-blur-md"
             onClick={onClose}
@@ -272,7 +234,6 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ open, project, onClose }) => 
             transition={{ duration: 0.2 }}
           />
 
-          {/* Player sheet (centered) */}
           <motion.div
             className="absolute inset-0 flex items-center justify-center p-4 md:p-6"
             initial={{ y: 40, opacity: 0, scale: 0.98 }}
@@ -286,14 +247,9 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ open, project, onClose }) => 
               dragElastic={0.2}
               onDragEnd={handleDragEnd}
               className="mx-auto w-full max-w-5xl rounded-2xl overflow-hidden border border-white/15 shadow-2xl shadow-black/40"
-              style={{
-                // Double safety: CSS class caps at 100dvh; inline style uses real innerHeight
-                maxHeight: maxH,
-              }}
+              style={{ maxHeight: maxH }}
             >
-              {/* Grid: video (1fr) + meta (auto). Video shrinks first to keep all visible. */}
               <div className="grid grid-rows-[minmax(0,1fr)_auto] bg-slate-950">
-                {/* Video area */}
                 <div className="relative bg-black flex items-center justify-center min-h-0">
                   <video
                     ref={videoRef}
@@ -305,8 +261,6 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ open, project, onClose }) => 
                     disablePictureInPicture
                     controlsList="nodownload noremoteplayback"
                   />
-
-                  {/* Close */}
                   <button
                     onClick={onClose}
                     aria-label="Close"
@@ -315,15 +269,13 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ open, project, onClose }) => 
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-
-                {/* Meta */}
                 <div className="bg-slate-950/80 px-5 py-4 flex items-center justify-between gap-3">
                   <div>
-                    <div className="text-white font-semibold tracking-tight">{project.title}</div>
+                    <div className="text-white font-bold tracking-tight">{project.title}</div>
                     <div className="text-slate-400 text-sm">{project.client} • {project.year}</div>
                   </div>
                   {!!project.awards?.length && (
-                    <div className="hidden md:flex items-center gap-2 text-slate-2 00 text-sm">
+                    <div className="hidden md:flex items-center gap-2 text-slate-200 text-sm">
                       <Award size={16} className="text-yellow-400" />
                       <span>{project.awards[0]}</span>
                     </div>
@@ -368,8 +320,7 @@ export default function PortfolioVideoGrid({ projects = DEMO_PROJECTS }: { proje
   };
 
   return (
-    <section className="py-20 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
-      {/* Subtle glowing orbs */}
+    <section className="py-20 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden font-[Montserrat] font-bold">
       <div className="pointer-events-none absolute top-1/3 right-1/4 w-80 h-80 bg-yellow-400/10 rounded-full blur-3xl animate-pulse" />
       <div className="pointer-events-none absolute bottom-1/3 left-1/4 w-60 h-60 bg-green-400/10 rounded-full blur-2xl animate-pulse delay-1000" />
 
@@ -399,7 +350,7 @@ export default function PortfolioVideoGrid({ projects = DEMO_PROJECTS }: { proje
           viewport={{ once: true, margin: "-30px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          {CATEGORIES.map((c, i) => (
+          {CATEGORIES.map((c) => (
             <button
               key={c.id}
               onClick={() => setFilter(c.id)}
@@ -423,7 +374,6 @@ export default function PortfolioVideoGrid({ projects = DEMO_PROJECTS }: { proje
         </div>
       </div>
 
-      {/* Modal */}
       <PlayerModal open={open} project={active} onClose={closePlayer} />
     </section>
   );

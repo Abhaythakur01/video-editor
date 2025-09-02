@@ -4,43 +4,46 @@ const Showreel = () => {
   const [activeClass, setActiveClass] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const timeoutRef = useRef(null);
-  const animationTimeoutRef = useRef(null);
+  const timeoutRef = useRef<number | null>(null);
+  const animationTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    // Load Google Fonts (same as Hero component)
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }, []);
 
   const showreelItems = [
     {
       id: 1,
       title: 'Cinematic Adventures',
       topic: 'Travel Films',
-      description: 'Journey through breathtaking landscapes and vibrant cultures. Each frame is a story, meticulously crafted to inspire wanderlust and awe.',
       video: '/assets/portfolioVideos/Neelanath.mp4',
     },
     {
       id: 2,
       title: 'Brand Anthems',
       topic: 'Commercials',
-      description: 'Dynamic and compelling brand stories that capture attention, evoke emotion, and drive results for leading global brands.',
       video: '/assets/portfolioVideos/SobhaConstruction.mp4',
     },
     {
       id: 3,
-      title: 'Rhythmic Visions',
+      title: 'Rhythms',
       topic: 'Music Videos',
-      description: 'Visual masterpieces synchronized with sound, creating immersive experiences that elevate the music and connect with audiences.',
       video: '/assets/portfolioVideos/SanamPuri.mp4',
     },
     {
       id: 4,
       title: 'Awards and Functions',
       topic: 'Event Highlights',
-      description: 'Capturing the essence and excitement of prestigious events, showcasing memorable moments with elegance and flair.',
       video: '/assets/portfolioVideos/Ranbir.mp4',
     },
     {
       id: 5,
       title: 'Product in Motion',
       topic: 'Brand Films',
-      description: 'Sleek and sophisticated product showcases that highlight design, functionality, and innovation in a visually captivating way.',
       video: '/assets/portfolioVideos/POCO.mp4',
     },
   ];
@@ -118,7 +121,7 @@ const Showreel = () => {
             playsInline
             key={currentIndex}
             onError={(e) => {
-              e.target.style.backgroundColor = '#1a1a1a';
+              (e.target as HTMLVideoElement).style.backgroundColor = '#1a1a1a';
             }}
           />
           <div className="content">
@@ -140,7 +143,7 @@ const Showreel = () => {
               loop 
               playsInline
               onError={(e) => {
-                e.target.style.backgroundColor = '#1a1a1a';
+                (e.target as HTMLVideoElement).style.backgroundColor = '#1a1a1a';
               }}
             />
             <div className="preview-overlay">
@@ -204,11 +207,11 @@ const Showreel = () => {
         
         .main-video .content {
           position: absolute;
-          top: 20%;
-          width: min(1140px, 80%);
+          top: 12%;
+          width: min(1000px, 75%);
           left: 50%;
-          transform: translateX(-50%);
-          padding-right: min(30%, 200px);
+          transform: translateX(-65%);
+          padding-right: min(25%, 180px);
           box-sizing: border-box;
           color: #fff;
           text-shadow: 0 5px 10px rgba(0,0,0,0.4);
@@ -222,18 +225,21 @@ const Showreel = () => {
         
         .main-video .content .author {
           animation-delay: 0.1s;
-          font-weight: bold;
-          letter-spacing: 8px;
-          font-size: 0.9em;
-          margin-bottom: 10px;
+          font-family: 'Space Grotesk', system-ui, sans-serif;
+          font-weight: 600;
+          letter-spacing: 6px;
+          font-size: 0.85em;
+          margin-bottom: 8px;
+          color: #e0e0e0;
         }
         
         .main-video .content .title {
           animation-delay: 0.3s;
-          font-size: clamp(2em, 5vw, 5em);
-          font-weight: bold;
-          line-height: 1.2em;
-          margin: 5px 0;
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 700;
+          font-size: clamp(1.8em, 4.5vw, 4.2em);
+          line-height: 1.1em;
+          margin: 4px 0;
           background: linear-gradient(45deg, #FFD700, #32CD32, #00CED1);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -242,22 +248,28 @@ const Showreel = () => {
         
         .main-video .content .topic {
           animation-delay: 0.5s;
-          font-size: clamp(2em, 5vw, 5em);
-          font-weight: bold;
-          line-height: 1.2em;
-          margin: 5px 0;
-          background: linear-gradient(45deg, #FFD700, #32CD32, #00CED1);
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 700;
+          font-size: clamp(1.3em, 3vw, 2.8em);
+          line-height: 1.15em;
+          margin: 2px 0 12px 0;
+          background: linear-gradient(45deg, #32CD32, #00CED1, #FFD700);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
+          letter-spacing: 0.5px;
         }
         
         .main-video .content .des {
           animation-delay: 0.7s;
-          margin: 20px 0;
-          line-height: 1.6;
-          font-size: 1.1em;
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 700;
+          margin: 16px 0;
+          line-height: 1.5;
+          font-size: 1.05em;
+          font-weight: 400;
           color: #e0e0e0;
+          max-width: 600px;
         }
         
         @keyframes slideInUp {
@@ -325,7 +337,8 @@ const Showreel = () => {
         
         .preview-overlay span {
           color: #fff;
-          font-weight: bold;
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 700;
           font-size: 14px;
           letter-spacing: 2px;
           background: rgba(0,0,0,0.7);
@@ -386,12 +399,12 @@ const Showreel = () => {
           background: transparent;
           border: 2px solid #fff;
           color: #fff;
-          font-weight: 600;
+          font-family: 'Montserrat', sans-serif;
+          font-weight: 700;
           letter-spacing: 2px;
           cursor: pointer;
           transition: all 0.3s ease;
           border-radius: 4px;
-          font-family: inherit;
         }
         
         .contact-button:hover {
@@ -423,22 +436,38 @@ const Showreel = () => {
           transition: width 0.5s ease;
         }
         
-        /* Responsive Design */
-        @media screen and (max-width: 768px) {
-          .main-video .content {
-            padding-right: 20px;
-            top: 30%;
-            width: 90%;
+      @media screen and (max-width: 768px) {
+      .main-video .content {
+        padding-right: 20px;
+        top: 15%;
+        width: 88%;
+        transform: translateX(-55%); /* Same as desktop */
+        left: 50%; /* Make sure this is also set */
+        padding-left: 20px;
+        }
+          
+          .main-video .content .author {
+            font-size: 0.75em;
+            letter-spacing: 4px;
+            margin-bottom: 6px;
           }
           
-          .main-video .content .title,
+          .main-video .content .title {
+            font-size: clamp(1.4em, 7vw, 2.8em);
+            margin: 3px 0;
+            line-height: 1.05em;
+          }
+          
           .main-video .content .topic {
-            font-size: clamp(1.5em, 8vw, 3em);
+            font-size: clamp(1.1em, 5vw, 2.2em);
+            margin: 1px 0 10px 0;
+            line-height: 1.1em;
           }
           
           .main-video .content .des {
-            font-size: 1em;
+            font-size: 0.95em;
             line-height: 1.4;
+            margin: 12px 0;
           }
           
           .next-preview {
@@ -476,13 +505,30 @@ const Showreel = () => {
         
         @media screen and (max-width: 480px) {
           .main-video .content {
-            width: 95%;
-            top: 25%;
+            width: 92%;
+            top: 22%;
           }
           
           .main-video .content .author {
-            font-size: 0.7em;
-            letter-spacing: 4px;
+            font-size: 0.65em;
+            letter-spacing: 3px;
+            margin-bottom: 4px;
+          }
+          
+          .main-video .content .title {
+            margin: 2px 0;
+            line-height: 1em;
+          }
+          
+          .main-video .content .topic {
+            margin: 1px 0 8px 0;
+            line-height: 1.05em;
+          }
+          
+          .main-video .content .des {
+            margin: 10px 0;
+            font-size: 0.9em;
+            line-height: 1.35;
           }
           
           .next-preview {

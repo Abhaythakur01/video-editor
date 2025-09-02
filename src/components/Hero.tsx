@@ -6,6 +6,13 @@ const Hero = () => {
   const logoTrackRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    // âœ… Load Montserrat Bold
+    const link = document.createElement('link');
+    link.href =
+      'https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+
     let animationId: number;
     let startTime: number | null = null;
     const duration = 25000;
@@ -34,7 +41,11 @@ const Hero = () => {
   ];
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
+      style={{ fontFamily: 'Montserrat, system-ui, sans-serif', fontWeight: 700 }}
+    >
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
@@ -51,9 +62,37 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 mt-8 sm:mt-12">
         {/* Main Heading */}
-        <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight">
-          <span className="text-white block sm:inline">Anurag </span>
-          <span className="bg-gradient-to-r from-yellow-400 via-green-400 to-yellow-500 bg-clip-text text-transparent font-bold block sm:inline">
+        <h1 
+          className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 leading-tight"
+          style={{
+            fontWeight: '900',
+            fontFamily: 'Montserrat, system-ui, sans-serif',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+          }}
+        >
+          <span 
+            className="text-white block sm:inline"
+            style={{
+              fontWeight: '900',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
+            }}
+          >
+            Anurag{' '}
+          </span>
+          <span
+            className="bg-gradient-to-r from-yellow-400 via-green-400 to-yellow-500 bg-clip-text text-transparent block sm:inline"
+            style={{
+              background: 'linear-gradient(135deg, #facc15 0%, #4ade80 50%, #eab308 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              color: 'transparent',
+              fontWeight: '900',
+              display: 'inline-block',
+              textShadow: 'none',
+              filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.3))'
+            }}
+          >
             MediaWorks
           </span>
         </h1>
@@ -61,11 +100,11 @@ const Hero = () => {
         {/* Subtitle */}
         <div className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-2 sm:gap-4 text-slate-300">
-            <span className="font-light tracking-wide text-yellow-400">Video Editor</span>
+            <span className="tracking-wide text-yellow-400 font-bold">Video Editor</span>
             <span className="hidden sm:block w-2 h-2 bg-gradient-to-r from-yellow-400 to-green-400 rounded-full" />
-            <span className="font-light tracking-wide text-green-400">Story Sculptor</span>
+            <span className="tracking-wide text-green-400 font-bold">Story Sculptor</span>
             <span className="hidden sm:block w-2 h-2 bg-gradient-to-r from-green-400 to-yellow-400 rounded-full" />
-            <span className="font-light tracking-wide text-yellow-500">Mumbai</span>
+            <span className="tracking-wide text-yellow-500 font-bold">Mumbai</span>
           </div>
         </div>
 
@@ -74,52 +113,32 @@ const Hero = () => {
           <a href="#showreel" className="inline-block">
             <button
               aria-label="Watch video showreel"
-              className="relative px-8 sm:px-12 py-3 sm:py-4 font-bold text-yellow-400 uppercase tracking-wide rounded-full overflow-hidden transition-colors duration-500 border-2 border-yellow-400 group text-sm sm:text-base"
+              className="relative px-8 sm:px-12 py-3 sm:py-4 text-white uppercase tracking-widest rounded-full overflow-hidden transition-all duration-500 border-2 border-yellow-400 group text-sm sm:text-base font-bold"
             >
-              <span className="relative z-10">Watch Showreel</span>
-
-              <span className="absolute inset-0 overflow-hidden rounded-full z-0">
-                <span className="relative block w-full h-full filter [filter:url(#goo)]">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <span
-                      key={i}
-                      className="absolute top-0 h-full w-1/4 rounded-full bg-gradient-to-r from-yellow-400 via-green-400 to-yellow-400 transform translate-y-full scale-125 transition-transform duration-500 ease-out group-hover:translate-y-0 group-hover:scale-100"
-                      style={{ left: `${i * 25}%`, transitionDelay: `${i * 80}ms` }}
-                    />
-                  ))}
-                </span>
+              <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Watch Showreel
+                <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform duration-300" />
               </span>
-
-              <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-green-400 opacity-0 transition-opacity duration-300 rounded-full group-hover:opacity-100" />
             </button>
           </a>
-
-          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" className="hidden">
-            <defs>
-              <filter id="goo">
-                <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -7" result="goo" />
-                <feBlend in2="goo" in="SourceGraphic" result="mix" />
-              </filter>
-            </defs>
-          </svg>
         </div>
 
-        {/* Social Proof */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 text-sm text-slate-400 mb-8 sm:mb-12">
-          <div className="flex items-center gap-2 transition-all duration-500 ease-out hover:scale-105">
-            <div className="w-8 h-1 bg-gradient-to-r from-yellow-400 to-green-400 rounded-full" />
-            <span className="text-yellow-400">200+ Projects</span>
+        {/* Social Proof - Centered */}
+        <div className="flex flex-col items-center justify-center gap-3 text-sm mb-8 sm:mb-12">
+          <div className="text-center">
+            <span className="text-yellow-400 font-bold text-lg">200+ Projects</span>
           </div>
-          <div className="flex items-center gap-2 transition-all duration-500 ease-out hover:scale-105">
-            <div className="w-8 h-1 bg-gradient-to-r from-green-400 to-yellow-400 rounded-full" />
-            <span className="text-green-400">14+ Years Experience</span>
+          <div className="text-center">
+            <span className="text-green-400 font-bold text-lg">14+ Years Experience</span>
           </div>
         </div>
 
         {/* Trusted By */}
         <div className="mt-8 sm:mt-12">
-          <div className="text-xs text-slate-300 uppercase tracking-widest mb-6 sm:mb-8 font-light">Trusted By</div>
+          <div className="text-xs text-slate-300 uppercase tracking-widest mb-6 sm:mb-8 font-bold">
+            Trusted By
+          </div>
           <div className="relative w-full overflow-hidden py-4">
             <div className="absolute left-0 top-0 w-12 sm:w-20 h-full bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
             <div className="absolute right-0 top-0 w-12 sm:w-20 h-full bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
@@ -150,7 +169,10 @@ const Hero = () => {
                       const parent = target.parentElement;
                       if (parent && !parent.querySelector('.logo-text')) {
                         const textSpan = document.createElement('span');
-                        textSpan.className = 'logo-text text-gray-800 text-xs sm:text-sm font-semibold px-2 sm:px-4';
+                        textSpan.className =
+                          'logo-text text-gray-800 text-xs sm:text-sm px-2 sm:px-4';
+                        textSpan.style.fontFamily =
+                          'Montserrat, system-ui, sans-serif';
                         textSpan.textContent = company.name;
                         parent.appendChild(textSpan);
                       }
@@ -169,9 +191,14 @@ const Hero = () => {
           <div className="w-6 h-10 border-2 border-green-400/60 rounded-full flex justify-center transition-all duration-700 ease-out hover:border-green-400/80 hover:scale-110">
             <div className="w-1 h-3 bg-gradient-to-b from-yellow-400 to-green-400 rounded-full mt-2 animate-pulse" />
           </div>
-          <ChevronDown className="text-green-400/80 mt-2 transition-all duration-500 ease-out hover:text-green-400 hover:scale-110" size={20} />
+          <ChevronDown
+            className="text-green-400/80 mt-2 transition-all duration-500 ease-out hover:text-green-400 hover:scale-110"
+            size={20}
+          />
         </div>
-        <div className="text-xs text-slate-400 mt-2 tracking-widest font-light">SCROLL</div>
+        <div className="text-xs text-slate-400 mt-2 tracking-widest">
+          SCROLL
+        </div>
       </div>
     </section>
   );
