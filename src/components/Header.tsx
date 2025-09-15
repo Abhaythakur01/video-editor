@@ -71,27 +71,55 @@ const Header = () => {
             className="md:hidden text-white transition-all duration-300 hover:scale-110"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <div className="relative">
+              {/* Menu Icon */}
+              <Menu 
+                size={24} 
+                className={`transition-all duration-300 ${
+                  isMobileMenuOpen ? 'rotate-180 opacity-0 scale-75' : 'rotate-0 opacity-100 scale-100'
+                }`}
+              />
+              {/* Close Icon */}
+              <X 
+                size={24} 
+                className={`absolute top-0 left-0 transition-all duration-300 ${
+                  isMobileMenuOpen ? 'rotate-0 opacity-100 scale-100' : 'rotate-180 opacity-0 scale-75'
+                }`}
+              />
+            </div>
           </button>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden mt-2 pb-3 border-t border-white/10">
-            <div className="flex flex-col space-y-3 pt-3 bg-slate-900/40 backdrop-blur-xl rounded-xl p-4 border border-white/10 shadow-md shadow-yellow-400/5">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="text-white/80 hover:text-white transition-colors duration-300"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))}
+        {/* Mobile Navigation - Animated Container */}
+        <div className={`md:hidden overflow-hidden transition-all duration-800 ease-out ${
+          isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}>
+          <div className={`transform transition-all duration-800 ease-out ${
+            isMobileMenuOpen ? 'translate-y-0 scale-100' : '-translate-y-8 scale-90'
+          }`}>
+            <div className="mt-4 pb-2 border-t border-white/10">
+              <div className="flex flex-col space-y-1 pt-4 bg-slate-900/60 backdrop-blur-xl rounded-xl p-4 border border-white/20 shadow-lg shadow-yellow-400/10">
+                {navItems.map((item, index) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className={`text-white/80 hover:text-white hover:bg-white/10 rounded-lg px-3 py-2 transition-all duration-500 ease-out transform hover:scale-102 ${
+                      isMobileMenuOpen 
+                        ? 'translate-x-0 opacity-100' 
+                        : 'translate-x-8 opacity-0'
+                    }`}
+                    style={{
+                      transitionDelay: isMobileMenuOpen ? `${index * 80}ms` : '0ms'
+                    }}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   );

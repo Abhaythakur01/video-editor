@@ -3,32 +3,46 @@ import { ChevronDown } from 'lucide-react';
 
 const Hero = () => {
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [showLogos, setShowLogos] = useState(false);
   const logoTrackRef = useRef<HTMLDivElement | null>(null);
 
+  const duration = 25000;
+
   useEffect(() => {
-    // âœ… Load Montserrat Bold
+    // Load Montserrat Bold
     const link = document.createElement('link');
     link.href =
       'https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
+  }, []);
+
+  useEffect(() => {
+    if (!showLogos) return;
 
     let animationId: number;
     let startTime: number | null = null;
-    const duration = 25000;
 
     const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
+      if (!startTime) {
+        startTime = timestamp;
+      }
       const elapsed = timestamp - startTime;
       const progress = (elapsed % duration) / duration;
       const offset = -(progress * 50);
       setScrollOffset(offset);
-      animationId = requestAnimationFrame(animate);
+
+      if (elapsed < duration) {
+        animationId = requestAnimationFrame(animate);
+      } else {
+        setShowLogos(false); // hide after one full cycle
+      }
     };
 
     animationId = requestAnimationFrame(animate);
+
     return () => cancelAnimationFrame(animationId);
-  }, []);
+  }, [showLogos]);
 
   const logos = [
     { name: 'Netflix', logo: '/assets/logos/netflix-logo.png' },
@@ -39,6 +53,19 @@ const Hero = () => {
     { name: 'Curefit', logo: '/assets/logos/curefit-logo.png' },
     { name: 'Flipkart', logo: '/assets/logos/flipkart-logo.png' }
   ];
+
+  // Common gradient style for text elements
+  const gradientTextStyle = {
+    background: 'linear-gradient(135deg, #facc15 0%, #4ade80 50%, #eab308 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+    color: 'transparent',
+    fontWeight: '900',
+    display: 'inline-block',
+    textShadow: 'none',
+    filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.3))'
+  };
 
   return (
     <section
@@ -63,7 +90,7 @@ const Hero = () => {
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 mt-8 sm:mt-12">
         {/* Main Heading */}
         <h1 
-          className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 leading-tight"
+          className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 sm:mb-4 leading-tight"
           style={{
             fontWeight: '900',
             fontFamily: 'Montserrat, system-ui, sans-serif',
@@ -81,108 +108,128 @@ const Hero = () => {
           </span>
           <span
             className="bg-gradient-to-r from-yellow-400 via-green-400 to-yellow-500 bg-clip-text text-transparent block sm:inline"
-            style={{
-              background: 'linear-gradient(135deg, #facc15 0%, #4ade80 50%, #eab308 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              color: 'transparent',
-              fontWeight: '900',
-              display: 'inline-block',
-              textShadow: 'none',
-              filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.3))'
-            }}
+            style={gradientTextStyle}
           >
             MediaWorks
           </span>
         </h1>
 
-        {/* Subtitle */}
-        <div className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-2 sm:gap-4 text-slate-300">
-            <span className="tracking-wide text-yellow-400 font-bold">Video Editor</span>
-            <span className="hidden sm:block w-2 h-2 bg-gradient-to-r from-yellow-400 to-green-400 rounded-full" />
-            <span className="tracking-wide text-green-400 font-bold">Story Sculptor</span>
-            <span className="hidden sm:block w-2 h-2 bg-gradient-to-r from-green-400 to-yellow-400 rounded-full" />
-            <span className="tracking-wide text-yellow-500 font-bold">Mumbai</span>
-          </div>
+        {/* Subtitle / Social Proof combined for mobile */}
+        <div className="flex sm:hidden flex-row items-center justify-center gap-4 text-sm mb-8">
+          <span 
+            className="font-bold"
+            style={gradientTextStyle}
+          >
+            Video Editor
+          </span>
+          <span 
+            className="font-bold"
+            style={gradientTextStyle}
+          >
+            14+ Years Experience
+          </span>
+        </div>
+
+        {/* Subtitle for desktop */}
+        <div className="hidden sm:block text-lg md:text-xl lg:text-2xl mb-4 sm:mb-6 text-slate-300">
+          <span 
+            className="tracking-wide font-bold"
+            style={gradientTextStyle}
+          >
+            Video Editor
+          </span>
+          <span className="mx-2 text-slate-400">·</span>
+          <span 
+            className="tracking-wide font-bold"
+            style={gradientTextStyle}
+          >
+            Story Sculptor
+          </span>
+          <span className="mx-2 text-slate-400">·</span>
+          <span 
+            className="tracking-wide font-bold"
+            style={gradientTextStyle}
+          >
+            Mumbai
+          </span>
         </div>
 
         {/* CTA Button */}
-        <div className="flex justify-center mb-12 sm:mb-16">
-          <a href="#showreel" className="inline-block">
+        <div className="flex justify-center mb-8 sm:mb-12">
+          <a href="#showreel" className="w-full max-w-[160px] sm:max-w-[220px]">
             <button
               aria-label="Watch video showreel"
-              className="relative px-8 sm:px-12 py-3 sm:py-4 text-white uppercase tracking-widest rounded-full overflow-hidden transition-all duration-500 border-2 border-yellow-400 group text-sm sm:text-base font-bold"
+              className="relative w-full px-4 py-2 sm:px-10 sm:py-3 text-white uppercase tracking-widest rounded-full overflow-hidden transition-all duration-500 bg-gradient-to-r from-yellow-400 to-green-400 text-xs sm:text-sm lg:text-base font-bold shadow-lg whitespace-nowrap"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <span className="relative z-10 flex items-center justify-center gap-2">
+              <span className="relative z-10 flex items-center justify-center gap-1 sm:gap-2 whitespace-nowrap">
                 Watch Showreel
-                <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform duration-300" />
+                <ChevronDown size={14} className="sm:size-[16px] lg:size-[18px] group-hover:translate-y-1 transition-transform duration-300" />
               </span>
             </button>
           </a>
         </div>
 
-        {/* Social Proof - Centered */}
-        <div className="flex flex-col items-center justify-center gap-3 text-sm mb-8 sm:mb-12">
-          <div className="text-center">
-            <span className="text-yellow-400 font-bold text-lg">200+ Projects</span>
-          </div>
-          <div className="text-center">
-            <span className="text-green-400 font-bold text-lg">14+ Years Experience</span>
-          </div>
+        {/* Social Proof full version for desktop */}
+        <div className="hidden sm:flex flex-row flex-wrap items-center justify-center gap-3 text-sm mb-6 sm:mb-10">
+          <span 
+            className="font-bold text-base sm:text-lg"
+            style={gradientTextStyle}
+          >
+            200+ Projects
+          </span>
+          <span className="text-slate-500">|</span>
+          <span 
+            className="font-bold text-base sm:text-lg"
+            style={gradientTextStyle}
+          >
+            14+ Years Experience
+          </span>
         </div>
 
-        {/* Trusted By */}
-        <div className="mt-8 sm:mt-12">
-          <div className="text-xs text-slate-300 uppercase tracking-widest mb-6 sm:mb-8 font-bold">
+        {/* Trusted By Button */}
+        <div className="mt-2 sm:mt-10">
+          <button
+            onClick={() => setShowLogos((prev) => !prev)}
+            className="px-3 py-1.5 sm:px-4 sm:py-2 border border-slate-500 text-slate-300 text-xs uppercase tracking-widest rounded-full bg-transparent hover:bg-slate-800 transition"
+          >
             Trusted By
-          </div>
-          <div className="relative w-full overflow-hidden py-4">
-            <div className="absolute left-0 top-0 w-12 sm:w-20 h-full bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 w-12 sm:w-20 h-full bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
+          </button>
+        </div>
 
-            <div
-              ref={logoTrackRef}
-              className="flex gap-4 sm:gap-8"
-              style={{
-                transform: `translateX(${scrollOffset}%)`,
-                width: 'max-content',
-                transition: 'transform 0.1s linear',
-              }}
-            >
-              {[...logos, ...logos].map((company, index) => (
-                <div
-                  key={`${company.name}-${index}`}
-                  className="flex-shrink-0 bg-gradient-to-br from-white via-yellow-50/80 to-green-50/60 border border-gray-200/30 rounded-lg px-4 sm:px-6 py-2 sm:py-3 shadow-md transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:-translate-y-1"
-                >
-                  <img
-                    src={company.logo}
-                    alt={`${company.name} logo`}
-                    className="object-contain h-8 sm:h-10 max-w-[120px] filter brightness-100 contrast-110"
-                    loading="lazy"
-                    style={{ imageRendering: 'crisp-edges' }}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent && !parent.querySelector('.logo-text')) {
-                        const textSpan = document.createElement('span');
-                        textSpan.className =
-                          'logo-text text-gray-800 text-xs sm:text-sm px-2 sm:px-4';
-                        textSpan.style.fontFamily =
-                          'Montserrat, system-ui, sans-serif';
-                        textSpan.textContent = company.name;
-                        parent.appendChild(textSpan);
-                      }
-                    }}
-                  />
-                </div>
-              ))}
+        {/* Logo Carousel */}
+        {showLogos && (
+          <div className="mt-6 sm:mt-8">
+            <div className="relative w-full overflow-hidden py-4">
+              <div className="absolute left-0 top-0 w-12 sm:w-20 h-full bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 w-12 sm:w-20 h-full bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
+
+              <div
+                ref={logoTrackRef}
+                className="flex gap-4 sm:gap-8"
+                style={{
+                  transform: `translateX(${scrollOffset}%)`,
+                  width: 'max-content',
+                  transition: 'transform 0.1s linear',
+                }}
+              >
+                {[...logos, ...logos].map((company, index) => (
+                  <div
+                    key={`${company.name}-${index}`}
+                    className="flex-shrink-0 bg-gradient-to-br from-white via-yellow-50/80 to-green-50/60 border border-gray-200/30 rounded-lg px-4 sm:px-6 py-2 sm:py-3 shadow-md"
+                  >
+                    <img
+                      src={company.logo}
+                      alt={`${company.name} logo`}
+                      className="object-contain h-8 sm:h-10 max-w-[120px] filter brightness-100 contrast-110"
+                      loading="lazy"
+                      style={{ imageRendering: 'crisp-edges' }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Scroll Indicator */}
